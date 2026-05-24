@@ -11,36 +11,42 @@
     <link rel="preload" as="image" href="jembatanmol4.png">
 
     <style>
-        /* Menghapus margin bawaan dan memastikan layar penuh */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden; /* Mencegah munculnya scrollbar jika ukuran wadah berubah */
-            background-color: transparent; /* Membuat background transparan agar menyatu dengan web */
-        }
-
-        /* Container sekarang mengambil 100% lebar dan tinggi dari wadahnya */
-        #simulasi-container {
-            position: relative;
+        /* Body diatur sebagai wadah flexbox sentral */
+        body {
             width: 100vw;
             height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent;
             overflow: hidden;
         }
 
-        /* Gambar dipaksa autostretch memenuhi seluruh container */
+        /* KUNCI AUTO-STRETCH 16:9:
+           Container akan mengikuti ukuran terbesar dari layar, 
+           namun dibatasi oleh rasio tinggi dan lebarnya secara matematis. 
+        */
+        #simulasi-container {
+            position: relative;
+            width: 100vw;
+            height: 56.25vw; /* 9 dibagi 16 = 56.25% */
+            max-height: 100vh;
+            max-width: calc(100vh * 16 / 9); /* Menahan lebar agar tidak gepeng */
+        }
+
+        /* Karena container sudah pasti 16:9, gambar cukup diset 100% */
         .layer-gambar {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: fill; /* Kunci autostretch: mengabaikan rasio asli agar tidak ada sisa sudut */
             user-select: none;
             -webkit-user-drag: none;
         }
@@ -52,7 +58,7 @@
             z-index: 10;
         }
 
-        /* Koordinat otomatis menyesuaikan regangan gambar karena menggunakan persentase (%) */
+        /* Koordinat akurat karena container terkunci di rasio 16:9 */
         #area-kiri   { top: 40%; left: 4%; width: 25%; height: 22%; }
         #area-kanan  { top: 40%; right: 4%; width: 25%; height: 22%; }
         #area-atas   { top: 8%; left: 38%; width: 24%; height: 22%; }
