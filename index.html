@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktif Jembatan Mol</title>
+
+    <link rel="preload" as="image" href="jembatanmol1.png">
+    <link rel="preload" as="image" href="jembatanmol2.png">
+    <link rel="preload" as="image" href="jembatanmol3.png">
+    <link rel="preload" as="image" href="jembatanmol4.png">
+
+    <style>
+        /* Reset margin & memastikan box-sizing konsisten */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            /* Warna background opsional untuk menyatu dengan tema web */
+            background-color: #f4f4f9; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Container utama dengan rasio 16:9 untuk autoscaling lintas platform */
+        #simulasi-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px; /* Batas maksimal lebar kanvas di desktop */
+            aspect-ratio: 16 / 9;
+            background-color: #e3f2fd; /* Warna dasar sesuai kanvas utama */
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-radius: 8px; /* Opsional: memberikan sudut halus */
+        }
+
+        /* Styling untuk semua gambar agar memenuhi container */
+        .layer-gambar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* Area Hitbox Transparan */
+        .hitbox {
+            position: absolute;
+            cursor: pointer;
+            z-index: 10;
+            /* border: 2px solid rgba(255, 0, 0, 0.5); /* Hapus komentar baris ini jika ingin melihat batas area klik untuk kalibrasi */
+        }
+
+        /* Koordinat presisi untuk setiap pulau berdasarkan persentase kanvas 16:9 */
+        #area-kiri   { top: 40%; left: 4%; width: 25%; height: 22%; }
+        #area-kanan  { top: 40%; right: 4%; width: 25%; height: 22%; }
+        #area-atas   { top: 8%; left: 38%; width: 24%; height: 22%; }
+        #area-bawah  { bottom: 12%; left: 38%; width: 24%; height: 22%; }
+
+        /* Styling Pop-up Overlay */
+        .popup-slide {
+            opacity: 0;
+            pointer-events: none; /* Tidak bisa diklik saat tersembunyi */
+            transition: opacity 0.25s ease-in-out; /* Animasi fade in/out yang tenang */
+            z-index: 20;
+            cursor: pointer; /* Indikator bahwa area bisa diklik untuk menutup */
+        }
+
+        /* Class untuk menampilkan pop-up */
+        .popup-slide.aktif {
+            opacity: 1;
+            pointer-events: auto; /* Mengaktifkan klik untuk menutup */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="simulasi-container">
+        <img src="jembatanmol.png" alt="Jembatan Mol Utama" class="layer-gambar">
+
+        <div id="area-kiri" class="hitbox" onclick="bukaPopup('popup-kiri')" title="Jumlah Partikel"></div>
+        <div id="area-kanan" class="hitbox" onclick="bukaPopup('popup-kanan')" title="Massa"></div>
+        <div id="area-atas" class="hitbox" onclick="bukaPopup('popup-atas')" title="Molaritas"></div>
+        <div id="area-bawah" class="hitbox" onclick="bukaPopup('popup-bawah')" title="Volume dan Tekanan"></div>
+
+        <img src="jembatanmol1.png" id="popup-kiri" class="layer-gambar popup-slide" onclick="tutupSemuaPopup()" alt="Rumus Jumlah Partikel">
+        <img src="jembatanmol2.png" id="popup-kanan" class="layer-gambar popup-slide" onclick="tutupSemuaPopup()" alt="Rumus Massa">
+        <img src="jembatanmol3.png" id="popup-atas" class="layer-gambar popup-slide" onclick="tutupSemuaPopup()" alt="Rumus Molaritas">
+        <img src="jembatanmol4.png" id="popup-bawah" class="layer-gambar popup-slide" onclick="tutupSemuaPopup()" alt="Rumus Volume dan Tekanan">
+    </div>
+
+    <script>
+        // Logika untuk menangani interaksi klik
+        const semuaPopup = document.querySelectorAll('.popup-slide');
+
+        // Fungsi membuka slide spesifik
+        function bukaPopup(idPopup) {
+            tutupSemuaPopup(); // Memastikan pop-up lain tertutup
+            document.getElementById(idPopup).classList.add('aktif');
+        }
+
+        // Fungsi menutup semua slide kembali ke kanvas utama
+        function tutupSemuaPopup() {
+            semuaPopup.forEach(popup => {
+                popup.classList.remove('aktif');
+            });
+        }
+    </script>
+
+</body>
+</html>
