@@ -11,42 +11,36 @@
     <link rel="preload" as="image" href="jembatanmol4.png">
 
     <style>
-        /* Reset margin & memastikan box-sizing konsisten */
+        /* Menghapus margin bawaan dan memastikan layar penuh */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
-        body {
-            /* Warna background opsional untuk menyatu dengan tema web */
-            background-color: #f4f4f9; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Mencegah munculnya scrollbar jika ukuran wadah berubah */
+            background-color: transparent; /* Membuat background transparan agar menyatu dengan web */
         }
 
-        /* Container utama dengan rasio 16:9 untuk autoscaling lintas platform */
+        /* Container sekarang mengambil 100% lebar dan tinggi dari wadahnya */
         #simulasi-container {
             position: relative;
-            width: 100%;
-            max-width: 900px; /* Batas maksimal lebar kanvas di desktop */
-            aspect-ratio: 16 / 9;
-            background-color: #e3f2fd; /* Warna dasar sesuai kanvas utama */
+            width: 100vw;
+            height: 100vh;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            border-radius: 8px; /* Opsional: memberikan sudut halus */
         }
 
-        /* Styling untuk semua gambar agar memenuhi container */
+        /* Gambar dipaksa autostretch memenuhi seluruh container */
         .layer-gambar {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: fill; /* Kunci autostretch: mengabaikan rasio asli agar tidak ada sisa sudut */
             user-select: none;
             -webkit-user-drag: none;
         }
@@ -56,10 +50,9 @@
             position: absolute;
             cursor: pointer;
             z-index: 10;
-            /* border: 2px solid rgba(255, 0, 0, 0.5); /* Hapus komentar baris ini jika ingin melihat batas area klik untuk kalibrasi */
         }
 
-        /* Koordinat presisi untuk setiap pulau berdasarkan persentase kanvas 16:9 */
+        /* Koordinat otomatis menyesuaikan regangan gambar karena menggunakan persentase (%) */
         #area-kiri   { top: 40%; left: 4%; width: 25%; height: 22%; }
         #area-kanan  { top: 40%; right: 4%; width: 25%; height: 22%; }
         #area-atas   { top: 8%; left: 38%; width: 24%; height: 22%; }
@@ -68,16 +61,15 @@
         /* Styling Pop-up Overlay */
         .popup-slide {
             opacity: 0;
-            pointer-events: none; /* Tidak bisa diklik saat tersembunyi */
-            transition: opacity 0.25s ease-in-out; /* Animasi fade in/out yang tenang */
+            pointer-events: none;
+            transition: opacity 0.25s ease-in-out;
             z-index: 20;
-            cursor: pointer; /* Indikator bahwa area bisa diklik untuk menutup */
+            cursor: pointer;
         }
 
-        /* Class untuk menampilkan pop-up */
         .popup-slide.aktif {
             opacity: 1;
-            pointer-events: auto; /* Mengaktifkan klik untuk menutup */
+            pointer-events: auto;
         }
     </style>
 </head>
@@ -98,16 +90,13 @@
     </div>
 
     <script>
-        // Logika untuk menangani interaksi klik
         const semuaPopup = document.querySelectorAll('.popup-slide');
 
-        // Fungsi membuka slide spesifik
         function bukaPopup(idPopup) {
-            tutupSemuaPopup(); // Memastikan pop-up lain tertutup
+            tutupSemuaPopup();
             document.getElementById(idPopup).classList.add('aktif');
         }
 
-        // Fungsi menutup semua slide kembali ke kanvas utama
         function tutupSemuaPopup() {
             semuaPopup.forEach(popup => {
                 popup.classList.remove('aktif');
